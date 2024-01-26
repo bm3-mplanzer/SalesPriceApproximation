@@ -1,8 +1,8 @@
 # Scenario
-Assume you want to buy four items in a supermarket. If you add the prices together, you get CHF 7.77. If you multiply the prices, you also get CHF 7.77. How much did the Items cost?
+Assume you want to buy four items in a supermarket. If you add the prices together, you get CHF 7.77. If you multiply the prices, you also get CHF 7.77. How much did the items cost?
 # How to solve this?
 Well, by trying out all possible combinations that add up to CHF 7.77 \
-Or if you want to solve this in more mathematical ways, you can assume two numbers and guess the other two, then get as close as possible. \
+You can guess two numbers and calculate the other two. Repeat until you have the right numbers. \
 $2+x_1+x_2 = 7.77$ \
 $x_1 \cdot x_2 = 7.77$ \
 (a few tries later) \
