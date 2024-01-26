@@ -1,5 +1,4 @@
-#define VERBOSE
-using System.Net.WebSockets;
+//#define VERBOSE
 
 namespace WarenpreisApproximation
 {
@@ -7,36 +6,8 @@ namespace WarenpreisApproximation
     {
         static int ClosestMatch = int.MaxValue;
         static List<int[]>? ClosestMatchCombinations;
-        static int Items;
+        static int NumberOfItems;
         static double TargetAsDouble;
-        static int counter = 0;
-
-//        static void _FindCombinations(int target, int index, int[] combination)
-//        {
-//            if (index == combination.Length - 1)
-//            {
-//                combination[index] = target;
-//                // Check if the combination satisfies the condition
-//                int result = (combination[0] * combination[1] * combination[2] * combination[3]);
-//                counter++;
-//                if (Math.Abs(777000000 - result) < Math.Abs(777000000 - ClosestMatch))
-//                {
-//#if VERBOSE
-//                    // Console.WriteLine("{0}, {1}, {2} {3}", Math.Abs(result), ClosestMatch, result, string.Join(", ", combination));
-//#endif
-//                    ClosestMatch = result;
-//                    ClosestMatchCombinations = combination;
-//                }
-//            }
-//            else
-//            {
-//                for (int i = 1; i <= target; i++)
-//                {
-//                    combination[index] = i;
-//                    FindCombinations(target - i, index + 1, combination);
-//                }
-//            }
-//        }
         static void FindCombinations(int target, int index, int[] combination)
         {
             if (index == combination.Length - 1)
@@ -44,15 +15,14 @@ namespace WarenpreisApproximation
                 combination[index] = target;
                 // Check if the combination satisfies the condition
                 int result = combination[0];
-                for (int i = 1; i < Items; i++) {
+                for (int i = 1; i < NumberOfItems; i++) {
                     result *= combination[i];
                 } 
-                counter++;
                 // Performance improvement
                 if (Math.Abs(TargetAsDouble - result) <= Math.Abs(TargetAsDouble - ClosestMatch))
                 {
 #if VERBOSE
-                    // Console.WriteLine("{0}, {1}, {2} {3}", Math.Abs(result), ClosestMatch, result, string.Join(", ", combination));
+                    Console.WriteLine("{0}, {1}, {2} {3}", Math.Abs(result), ClosestMatch, result, string.Join(", ", combination));
 #endif
                     if (ClosestMatch == result && ClosestMatchCombinations != null) { // null check is only for warning.
                         int[] _combination = combination.ToArray();
@@ -76,55 +46,55 @@ namespace WarenpreisApproximation
                 }
             }
         }
-        static int GetDecimalFactor(float number)
+        static void StartApproximation(float numberToApprox)
         {
-            string[] parts = number.ToString().Split('.');
-            return parts.Length > 1 ? parts[1].Length : 0;
-        }
-        static int GetIntegerValue(float number) {
-            return int.Parse(String.Join("", number.ToString().Split('.')));
-        }
-        static void StartApproximation(float number, int items)
-        {
-            int[] combination = new int[items]; // Array to store combinations
-            int decimalFactor = GetDecimalFactor(number);
-            int intValue = GetIntegerValue(number);
-            Items = items;
-            TargetAsDouble = (intValue * (double)Math.Pow(10, decimalFactor * (items - 1)));
+            int[] combination = new int[NumberOfItems];
+            int factor10 = GetFactor10(numberToApprox);
+            int numberAsInt = GetIntegerValue(numberToApprox);
+            TargetAsDouble = numberAsInt * Math.Pow(10, factor10 * (NumberOfItems - 1));
 
-            FindCombinations(intValue, 0, combination);
+            FindCombinations(numberAsInt, 0, combination);
             if (ClosestMatchCombinations == null)
             {
                 Console.WriteLine("No results found");
             }
             else
             {
-                Console.WriteLine("Closest match: {0} \nPossible Combinations:", ClosestMatch / Math.Pow(10, decimalFactor * (items)));
+                Console.WriteLine("Closest match: {0} \nPossible Combinations:", ClosestMatch / Math.Pow(10, factor10 * (NumberOfItems)));
                 foreach (var match in ClosestMatchCombinations)
                 {
                     string output = "";
                     foreach (var matchIntValue in match) {
-                        output += matchIntValue / Math.Pow(10, decimalFactor) + ", ";
+                        output += matchIntValue / Math.Pow(10, factor10) + ", ";
                     }
                     Console.WriteLine(output[..^2]);
                 }
             }
         }
+        static int GetFactor10(float number)
+        {
+            string[] parts = number.ToString().Split('.');
+            return parts.Length > 1 ? parts[1].Length : 0;
+        }
+        static int GetIntegerValue(float number)
+        {
+            return int.Parse(string.Join("", number.ToString().Split('.')));
+        }
         public static void Main()
         {
-            float number = 0;
-            int items = 0;
+            float numberToApprox = 0;
+            NumberOfItems = 0;
             Console.WriteLine("What number do you want to get? (7.77 by default)");
-            while (number <= 0)
+            while (numberToApprox <= 0)
             {
                 try
                 {
                     string _num = Console.ReadLine() ?? "0";
                     if (_num.Trim() == "") {
-                        number = 7.77f;
+                        numberToApprox = 7.77f;
                     }
                     else { 
-                        number = float.Parse(_num);
+                        numberToApprox = float.Parse(_num);
                     }
                 }
                 catch
@@ -133,18 +103,18 @@ namespace WarenpreisApproximation
                 }
             }
             Console.WriteLine("How many items are there? (4 by default)");
-            while (items == 0)
+            while (NumberOfItems == 0)
             {
                 try
                 {
                     string _items = Console.ReadLine() ?? "0";
                     if (_items.Trim() == "")
                     {
-                        items = 4;
+                        NumberOfItems = 4;
                     }
                     else
                     {
-                        items = int.Parse(_items);
+                        NumberOfItems = int.Parse(_items);
                     }
                 }
                 catch
@@ -152,7 +122,7 @@ namespace WarenpreisApproximation
                     Console.WriteLine("Invalid Number!");
                 }
             }
-            StartApproximation(number, items);
+            StartApproximation(numberToApprox);
         }
     }
 }

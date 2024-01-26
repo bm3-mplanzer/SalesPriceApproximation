@@ -12,12 +12,14 @@ It might be a bit hard to solve this by hand, because the smallest possible pric
 Yes, the program I wrote.
 It automatically searches for all possible combinations, it prints out the first one it finds.
 There are weird issues with doing maths with float values in most programming languages, the program only works with whole numbers.
+## Does this work for any number?
+No, AFAIK, there is no other number except for 7.7 where this works.
 # Demo
 ```
 What number do you want to get? (7.77 by default)
-
+7.77
 How many items are there? (4 by default)
-
+4
 Closest match: 7.77
 Possible Combinations:
 0.8, 1.25, 2.22, 3.5
@@ -43,4 +45,5 @@ Possible Combinations:
 3.5, 1.25, 0.8, 2.22
 3.5, 1.25, 2.22, 0.8
 3.5, 2.22, 0.8, 1.25
-3.5, 2.22, 1.25, 0.8```
+3.5, 2.22, 1.25, 0.8
+```
